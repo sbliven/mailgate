@@ -1,0 +1,23 @@
+# mailgate policy -- fixture account only.  No real mailbox is reachable from this file.
+policy_version = 1
+mode = "training"          # dry_run | training | supervised | auto
+
+[limits]
+mutations_per_hour = 40
+mutations_per_day = 120
+inbox_removals_per_day = 60
+get_message_per_hour = 120
+list_messages_per_hour = 200
+denials_per_hour = 20
+approval_prompts_per_hour = 25
+max_pending_approvals = 2
+approval_timeout_s = 90
+max_body_bytes = 262144
+
+[accounts.demo]
+backend = "fake"
+fixture = "tests/fixtures/mailbox_folders.json"
+move_allowlist   = ["Archive", "Newsletters", "Receipts", "ToRead"]
+label_allowlist  = ["p1", "p2", "p3", "waiting", "fyi"]
+protect_folders  = ["Legal"]        # denies reads AND writes
+attest_no_retention = ["Archive", "Newsletters", "Receipts", "ToRead"]

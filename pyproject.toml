@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mailgate"
+version = "0.1.0"
+description = "A restricted, audited MCP server giving an agent read + organise access to email. No send, no delete."
+requires-python = ">=3.11"
+dependencies = ["mcp>=1.0"]
+
+[project.optional-dependencies]
+gmail = ["google-auth>=2", "google-auth-oauthlib>=1", "requests>=2.31"]
+graph = ["msal>=1.28", "requests>=2.31"]
+imap = ["imapclient>=3"]
+dev = ["pytest>=8"]
+
+[project.scripts]
+mailgate = "mailgate.cli:main"
+mailgate-server = "mailgate.server:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "tests"]

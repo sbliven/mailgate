@@ -1,0 +1,38 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -e '.[dev]'
+      # The suite contacts no network and no email account: the only backend it
+      # enables is the fixture mailbox, and the live adapters refuse to construct.
+      - run: python -m pytest -q
+
+  no-forbidden-verbs:
+    # Split out so a regression in the destructive-verb lint is obvious in the
+    # checks list rather than buried in a 100-test run.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e '.[dev]'
+      - run: python -m pytest tests/test_no_forbidden_verbs.py tests/test_delete_by_proxy.py -q
